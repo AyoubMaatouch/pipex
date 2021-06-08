@@ -52,15 +52,14 @@ static void	free_ptr(char **g_ptr, int j)
 	free(g_ptr);
 }
 
-char		**ft_split(char const *s, char c)
+char		**ft_split_path(char const *s, char c)
 {
 	char			**g_ptr;
 	int				nb_words;
 	int				nb_c;
-	static int		j;
-
-	if (!s)
-		return (NULL);
+	int				j;
+	
+	j = 0;
 	nb_words = ft_nb_words(s, c);
 	if (!(g_ptr = (char**)ft_calloc((nb_words + 1), sizeof(char*))))
 		return (NULL);
@@ -74,7 +73,34 @@ char		**ft_split(char const *s, char c)
 			free_ptr(g_ptr, nb_words);
 			return (NULL);
 		}
-		g_ptr[j++] = ft_substr(s, 0, nb_c);
+		g_ptr[j++] =  ft_strjoin (ft_substr(s, 0, nb_c), "/");
+		s += nb_c + 1;
+	}
+	g_ptr[j] = 0;
+	return (g_ptr);
+}
+char		**ft_split(char const *s, char c)
+{
+	char			**g_ptr;
+	int				nb_words;
+	int				nb_c;
+	int				j;
+
+	j = 0;
+	nb_words = ft_nb_words(s, c);
+	if (!(g_ptr = (char**)ft_calloc((nb_words + 1), sizeof(char*))))
+		return (NULL);
+	while (nb_words > j)
+	{
+		while (*s == c)
+			s++;
+		nb_c = ft_nb_c(s, c);
+		if (!(g_ptr[j] = (char*)ft_calloc((nb_c + 1), sizeof(char))))
+		{
+			free_ptr(g_ptr, nb_words);
+			return (NULL);
+		}
+		g_ptr[j++] =  ft_substr(s, 0, nb_c);
 		s += nb_c + 1;
 	}
 	g_ptr[j] = 0;

@@ -12,49 +12,39 @@
 
 #include "pipex.h"
 
-t_data *get_last_node(t_data *tmp)
+char	**get_env_path(char **envp)
 {
-	while (tmp)
+	int		i;
+	char	*s;
+	char	**paths;
+
+	i = 0;
+	while (envp[i] != NULL)
 	{
-		if (tmp->next == NULL)
-			return (tmp);
-		tmp = tmp->next;
+		if (ft_strncmp(envp[i], "PATH", 4) == 0 && envp[i][4] == '=')
+		{
+			s = ft_strchr(envp[i], '=') + 1;
+			paths = ft_split_path(s, ':');
+			return (paths);
+		}
+		i++;
 	}
-	return (tmp);
-}
-t_data *get_cmd(char *av)
-{
-    t_data *cmds;
-
-    cmds = (t_data*) malloc(sizeof(t_data));
-    cmds->next = NULL;
-    cmds->cmd = ft_split(av, ' ');
-    return cmds;
+	return (0);
 }
 
-t_data *ge_data(int ac , char **av)
+int	main(int ac, char **av, char **env)
 {
-    int i = 2;
-    t_data *data;
-    t_data *tmp;
-    while (i < (ac - 2))
-    {
-        if (i == 2)
-            data = get_cmd(av[i]);
-        else
-            tmp = get_last_node(data);
-        tmp->next = get_cmd(av[i]);
-        i++;
-    }
-    tmp->next = NULL;
-    return data;
-}
-n 
-
-int main(int ac, char **av, char **env)
-{
-    puts(av[1]);
-    get_data(ac, av);
-    puts(av[ac - 1]);
-
+	int	fd;
+	int	fd2;
+	
+	fd = open(av[1], O_RDONLY);
+	fd2 = open(av[ac - 1], O_RDWR | O_APPEND | O_CREAT, 0777);
+	if (fd == -1 || fd2 == -1)
+		printf ("Pipex : %s\n", strerror(errno));
+	dup2(fd, 0);
+	dup2(fd2, 1);
+	ft_fork_pipes(ac - 3, av + 2, env);
+	close(fd);
+	close(fd2);
+	return (0);
 }

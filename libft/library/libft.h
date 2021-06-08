@@ -49,6 +49,7 @@ void			ft_putendl_fd(char *s, int fd);
 void			ft_putnbr_fd(int n, int fd);
 void			ft_putstr_fd(char *s, int fd);
 char			**ft_split(char const *s, char c);
+char		    **ft_split_path(char const *s, char c);
 char			*ft_itoa(int n);
 
 #endif

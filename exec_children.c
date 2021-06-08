@@ -12,11 +12,35 @@
 
 #include "pipex.h"
 
-int exec_childs (int in,  int *out, struct command *cmd)
+void	ft_execute_cmd (char *cmd, char **env)
 {
-	pid_t pid;
+	char	**re_env;
+	int		i;
+	int		res;
+	char	*tmp;
 
-	if ((pid = fork ()) == 0)
+	re_env = get_env_path(env);
+	i = 0;
+	while (re_env[i])
+	{
+		tmp = ft_strjoin(re_env[i], cmd);
+		res = execve (ft_split(tmp, ' ')[0], ft_split(tmp, ' '), env);
+		free(tmp);
+		i++;
+	}
+	if (res == -1)
+	{
+		write(2, "Pipex: Command Not Found\n", 25);
+		exit(1);
+	}	
+}
+
+int	exec_childs (int in, int *out, char *av, char **env)
+{
+	int	pid;
+
+	pid = fork ();
+	if (pid == 0)
 	{
 		if (in != 0)
 		{
@@ -30,16 +54,16 @@ int exec_childs (int in,  int *out, struct command *cmd)
 			close (out[0]);
 		}
 		close(out[0]);
-		execvp (cmd->argv [0], (char * const *)cmd->argv);
+		ft_execute_cmd(av, env);
 		exit(0);
 	}
-	return pid;
+	return (pid);
 }
 
-int last_child (int in, int *fd, struct command *cmd, int i, int n)
+int	last_child (int in, int *fd, char **env, char *av)
 {
-	pid_t x;
-	int ret; 
+	int	x;
+	int	ret;
 
 	x = fork();
 	if (x == 0)
@@ -47,11 +71,34 @@ int last_child (int in, int *fd, struct command *cmd, int i, int n)
 		dup2 (in, 0);
 		close(in);
 		close (fd[0]);
-		execvp (cmd [i].argv [0], (char * const *)cmd [i].argv);
+		ft_execute_cmd(av, env);
 		exit(0);
-	} 
+	}
 	close (fd[0]);
-	waitpid(x,&ret, 0 );
+	waitpid(x, &ret, 0);
+	return (0);
+}
+
+int	ft_fork_pipes (int n, char **av, char **env)
+{
+	int	i;
+	int	pid;
+	int	in;
+	int	fd[2];
+
+	in = 0;
+	i = 0;
+	while (i < n - 1)
+	{
+		pipe (fd);
+		exec_childs(in, fd, av[i], env);
+		close (fd[1]);
+		if (i != 0)
+			close(in);
+		in = fd [0];
+		i++;
+	}
+	last_child (in, fd, env, av[i]);
 	i = 0;
 	while (i < n - 1)
 	{
@@ -59,23 +106,4 @@ int last_child (int in, int *fd, struct command *cmd, int i, int n)
 		i++;
 	}
 	return (0);
-}
-int fork_pipes (int n, struct command *cmd)
-{
-	int i;
-	pid_t pid;
-	int in, fd [2];
-
-	in = 0;
-	for (i = 0; i < n - 1; ++i)
-	{
-		pipe (fd);
-		exec_childs (in, fd , cmd + i);
-		close (fd [1]); 
-		if (i != 0)
-			close(in);
-		in = fd [0];
-		// close(fd[0]);
-	}
-	return last_child (in, fd, cmd, i, n);
 }
