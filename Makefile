@@ -10,22 +10,28 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME=pipex
-LIB=libft.a
-SRC= exec_children.c pipex.c 
-FLGS=-Wall -Werror -Wextra
-CC=gcc
+NAME = pipex
+
+SRC = pipex.c exec_children.c
+BONUS = pipex_bonus.c exec_children_bonus.c
+	  
+FLAGS = gcc -Wall -Wextra -Werror
+
 all: $(NAME)
 
-$(NAME): 
-	make -C libft/.
-	mv libft/$(LIB) .
-	$(CC) $(SRC) $(LIB) -o $(NAME)
-clean :
-	rm -rf $(NAME)
+$(NAME): $(SRC)
+	@make -C ./libft
+	@$(CC) -o $(NAME) $(SRC) libft/libft.a
+
+clean:
+	@make clean -C ./libft
+
 fclean: clean
-	rm -rf $(LIB)
+	@make fclean -C ./libft
+	@rm -rf $(NAME)
+
+bonus: fclean
+	@make -C ./libft
+	@$(CC) -o $(NAME) $(BONUS) libft/libft.a
 
 re: fclean all
-
-.PHONY : all clean fclean re $(NAME)
