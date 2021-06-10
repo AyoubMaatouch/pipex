@@ -1,0 +1,14 @@
+total 88
+drwxr-xr-x  13 aymaatou  2019    442 Jun 10 10:04 .
+drwxr-xr-x   9 aymaatou  2019    306 Jun 10 09:52 ..
+drwxr-xr-x  12 aymaatou  2019    408 Jun 10 09:43 .git
+-rw-r--r--   1 aymaatou  2019   1286 Jun 10 09:43 Makefile
+-rw-r--r--   1 aymaatou  2019   2291 Jun 10 10:05 exec_children.c
+-rw-r--r--   1 aymaatou  2019   2290 Jun 10 09:43 exec_children_bonus.c
+drwxr-xr-x  73 aymaatou  2019   2482 Jun 10 10:04 libft
+-rwxr-xr-x   1 aymaatou  2019      0 Jun 10 10:06 out_file
+-rwxr-xr-x   1 aymaatou  2019  14020 Jun 10 10:04 pipex
+-rw-r--r--   1 aymaatou  2019   1911 Jun 10 10:04 pipex.c
+-rw-r--r--   1 aymaatou  2019    333 Jun 10 09:43 pipex.h
+-rw-r--r--   1 aymaatou  2019   1868 Jun 10 09:43 pipex_bonus.c
+-rw-r--r--   1 aymaatou  2019    351 Jun 10 09:43 pipex_bonus.h

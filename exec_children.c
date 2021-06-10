@@ -56,7 +56,6 @@ int	exec_childs (int in, int *out, char *av, char **env)
 		{
 			dup2 (out[1], 1);
 			close (out[1]);
-			close (out[0]);
 		}
 		close(out[0]);
 		ft_execute_cmd(av, env);
@@ -92,6 +91,7 @@ int	ft_fork_pipes (int n, char **av, char **env)
 
 	in = 0;
 	i = 0;
+	printf("%d\n", n);
 	while (i < n - 1)
 	{
 		pipe (fd);
