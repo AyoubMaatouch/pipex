@@ -47,7 +47,7 @@ int	main(int ac, char **av, char **env)
 	int	fd;
 	int	fd2;
 
-	if (ac == 5)
+	if (ac != 5)
 		return (write(2, "Pipex: Argument Error\n", 22));
 	else
 	{
